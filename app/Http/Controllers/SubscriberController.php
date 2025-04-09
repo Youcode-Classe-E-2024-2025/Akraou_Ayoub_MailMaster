@@ -42,4 +42,24 @@ class SubscriberController extends Controller
         return response()->json($subscriber);
     }
 
+    public function update(Request $request, $id)
+    {
+        try {
+            $subscriber = Subscriber::find($id);
+            if (!$subscriber) {
+                return response()->json(['message' => 'Not found'], 404);
+            }
+            $request->validate([
+                'name'  => 'sometimes|string|max:255',
+                'email' => 'sometimes|email|unique:subscribers,email,' . $id,
+            ]);
+
+            $subscriber->update($request->only('name', 'email'));
+            return response()->json(['message' => 'Updated successfully', 'data' => $subscriber]);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => $e->errors()], 422);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
 }
