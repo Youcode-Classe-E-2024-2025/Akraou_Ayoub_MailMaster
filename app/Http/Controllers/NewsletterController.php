@@ -49,14 +49,30 @@ class NewsletterController extends Controller
         return response()->json(['status' => 'success', 'data' => $newsletter]);
     }
 
-     */
-    public function update(Request $request, Newsletter $newsletter)
-    {
-        //
-    }
-
     /**
-     * Remove the specified resource from storage.
+     * Met à jour une newsletter spécifique.
+     */
+    public function update(Request $request, string $id)
+    {
+        $newsletter = Newsletter::find($id);
+
+        if (!$newsletter) {
+            return response()->json(['status' => 'error', 'message' => 'Newsletter non trouvée'], 404);
+        }
+
+        $validated = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'content' => 'sometimes|required|string',
+        ]);
+
+        $newsletter->update($validated);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Newsletter mise à jour avec succès',
+            'data' => $newsletter,
+        ]);
+    }
      */
     public function destroy(Newsletter $newsletter)
     {
