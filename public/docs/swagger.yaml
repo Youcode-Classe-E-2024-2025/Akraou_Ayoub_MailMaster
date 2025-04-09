@@ -201,6 +201,260 @@ paths:
                 '404':
                     description: Newsletter non trouvée
 
+    /campaigns:
+        get:
+            summary: Lister toutes les campagnes
+            tags:
+                - Campaigns
+            responses:
+                '200':
+                    description: Liste des campagnes
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [success]
+                                    data:
+                                        type: array
+                                        items:
+                                            $ref: '#/components/schemas/Campaign'
+                '500':
+                    description: Erreur serveur
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [error]
+                                    message:
+                                        type: string
+                                    error:
+                                        type: string
+
+        post:
+            summary: Créer une nouvelle campagne
+            tags:
+                - Campaigns
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CampaignInput'
+            responses:
+                '201':
+                    description: Campagne créée avec succès
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [success]
+                                    message:
+                                        type: string
+                                    data:
+                                        $ref: '#/components/schemas/Campaign'
+                '422':
+                    description: Erreur de validation
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [error]
+                                    message:
+                                        type: string
+                                    errors:
+                                        type: object
+                '500':
+                    description: Erreur serveur
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [error]
+                                    message:
+                                        type: string
+                                    error:
+                                        type: string
+
+    /campaigns/{id}:
+        get:
+            summary: Obtenir une campagne spécifique
+            tags:
+                - Campaigns
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                '200':
+                    description: Détails de la campagne
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [success]
+                                    data:
+                                        $ref: '#/components/schemas/Campaign'
+                '404':
+                    description: Campagne non trouvée
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [error]
+                                    message:
+                                        type: string
+                                    error:
+                                        type: string
+
+        put:
+            summary: Mettre à jour une campagne
+            tags:
+                - Campaigns
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CampaignInput'
+            responses:
+                '200':
+                    description: Campagne mise à jour avec succès
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [success]
+                                    message:
+                                        type: string
+                                    data:
+                                        $ref: '#/components/schemas/Campaign'
+                '404':
+                    description: Campagne non trouvée
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [error]
+                                    message:
+                                        type: string
+                                    error:
+                                        type: string
+                '422':
+                    description: Erreur de validation
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [error]
+                                    message:
+                                        type: string
+                                    errors:
+                                        type: object
+                '500':
+                    description: Erreur serveur
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [error]
+                                    message:
+                                        type: string
+                                    error:
+                                        type: string
+
+        delete:
+            summary: Supprimer une campagne
+            tags:
+                - Campaigns
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                '200':
+                    description: Campagne supprimée avec succès
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [success]
+                                    message:
+                                        type: string
+                '404':
+                    description: Campagne non trouvée
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [error]
+                                    message:
+                                        type: string
+                                    error:
+                                        type: string
+                '500':
+                    description: Erreur serveur
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        enum: [error]
+                                    message:
+                                        type: string
+                                    error:
+                                        type: string
+
 components:
     schemas:
         Subscriber:
@@ -284,3 +538,52 @@ components:
                     example: Newsletter créée avec succès
                 data:
                     $ref: '#/components/schemas/Newsletter'
+
+        Campaign:
+            type: object
+            properties:
+                id:
+                    type: integer
+                title:
+                    type: string
+                    example: Campagne de Pâques
+                newsletter_id:
+                    type: integer
+                newsletter:
+                    $ref: '#/components/schemas/Newsletter'
+                scheduled_at:
+                    type: string
+                    format: date-time
+                    example: '2025-04-15 10:00:00'
+                status:
+                    type: string
+                    enum: [scheduled, sent, draft]
+                    example: scheduled
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
+
+        CampaignInput:
+            type: object
+            required:
+                - title
+                - newsletter_id
+                - scheduled_at
+                - status
+            properties:
+                title:
+                    type: string
+                    example: Campagne de Pâques
+                newsletter_id:
+                    type: integer
+                scheduled_at:
+                    type: string
+                    format: date-time
+                    example: '2025-04-15T10:00:00Z'
+                status:
+                    type: string
+                    enum: [scheduled, sent, draft]
+                    example: scheduled
