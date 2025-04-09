@@ -8,11 +8,12 @@ use Illuminate\Http\Request;
 class NewsletterController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Affiche la liste de toutes les newsletters.
      */
     public function index()
     {
-        //
+        $newsletters = Newsletter::all();
+        return response()->json(['status' => 'success', 'data' => $newsletters]);
     }
 
     /**
