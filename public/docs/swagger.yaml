@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+  title: MailMaster API
+  version: 1.0.0
+  description: API pour la gestion des abonnés aux newsletters
+
+paths:
+  /api/subscribers:
+    get:
+      summary: Lister les abonnés
+      responses:
+        '200':
+          description: Liste des abonnés
+    post:
+      summary: Créer un abonné
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '201':
+          description: Abonné créé
+
+  /api/subscribers/{id}:
+    get:
+      summary: Obtenir un abonné
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détails de l’abonné
+        '404':
+          description: Abonné non trouvé
+    put:
+      summary: Modifier un abonné
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Abonné mis à jour
+    delete:
+      summary: Supprimer un abonné
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Supprimé avec succès
