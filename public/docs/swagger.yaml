@@ -1,79 +1,286 @@
 openapi: 3.0.0
 info:
-  title: MailMaster API
-  version: 1.0.0
-  description: API pour la gestion des abonnés aux newsletters
+    title: MailMaster API
+    version: 1.0.0
+    description: API pour la gestion des abonnés et newsletters
+
+servers:
+    - url: http://localhost:8000/api
 
 paths:
-  /api/subscribers:
-    get:
-      summary: Lister les abonnés
-      responses:
-        '200':
-          description: Liste des abonnés
-    post:
-      summary: Créer un abonné
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
+    /subscribers:
+        get:
+            summary: Lister les abonnés
+            tags:
+                - Subscribers
+            responses:
+                '200':
+                    description: Liste des abonnés
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Subscriber'
+
+        post:
+            summary: Créer un abonné
+            tags:
+                - Subscribers
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SubscriberInput'
+            responses:
+                '201':
+                    description: Abonné créé
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SubscriberResponse'
+
+    /subscribers/{id}:
+        get:
+            summary: Obtenir un abonné
+            tags:
+                - Subscribers
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                '200':
+                    description: Détails de l’abonné
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Subscriber'
+                '404':
+                    description: Abonné non trouvé
+
+        put:
+            summary: Modifier un abonné
+            tags:
+                - Subscribers
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SubscriberInput'
+            responses:
+                '200':
+                    description: Abonné mis à jour
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SubscriberResponse'
+
+        delete:
+            summary: Supprimer un abonné
+            tags:
+                - Subscribers
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                '200':
+                    description: Supprimé avec succès
+                '404':
+                    description: Abonné non trouvé
+
+    /newsletters:
+        get:
+            summary: Liste toutes les newsletters
+            tags:
+                - Newsletters
+            responses:
+                '200':
+                    description: Liste des newsletters
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Newsletter'
+
+        post:
+            summary: Crée une nouvelle newsletter
+            tags:
+                - Newsletters
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/NewsletterInput'
+            responses:
+                '201':
+                    description: Newsletter créée avec succès
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/NewsletterResponse'
+
+    /newsletters/{id}:
+        get:
+            summary: Affiche une newsletter
+            tags:
+                - Newsletters
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: ID de la newsletter
+                  schema:
+                      type: integer
+            responses:
+                '200':
+                    description: Newsletter trouvée
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Newsletter'
+                '404':
+                    description: Newsletter non trouvée
+
+        put:
+            summary: Met à jour une newsletter
+            tags:
+                - Newsletters
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: ID de la newsletter
+                  schema:
+                      type: integer
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/NewsletterInput'
+            responses:
+                '200':
+                    description: Newsletter mise à jour
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/NewsletterResponse'
+                '404':
+                    description: Newsletter non trouvée
+
+        delete:
+            summary: Supprime une newsletter
+            tags:
+                - Newsletters
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: ID de la newsletter
+                  schema:
+                      type: integer
+            responses:
+                '200':
+                    description: Newsletter supprimée avec succès
+                '404':
+                    description: Newsletter non trouvée
+
+components:
+    schemas:
+        Subscriber:
+            type: object
+            properties:
+                id:
+                    type: integer
+                name:
+                    type: string
+                    example: Ayoub Akraou
+                email:
+                    type: string
+                    format: email
+                    example: ayoub@example.com
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
+
+        SubscriberInput:
+            type: object
+            required:
                 - name
                 - email
-              properties:
+            properties:
                 name:
-                  type: string
+                    type: string
+                    example: Ayoub Akraou
                 email:
-                  type: string
-      responses:
-        '201':
-          description: Abonné créé
+                    type: string
+                    format: email
+                    example: ayoub@example.com
 
-  /api/subscribers/{id}:
-    get:
-      summary: Obtenir un abonné
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Détails de l’abonné
-        '404':
-          description: Abonné non trouvé
-    put:
-      summary: Modifier un abonné
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-      responses:
-        '200':
-          description: Abonné mis à jour
-    delete:
-      summary: Supprimer un abonné
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Supprimé avec succès
+        SubscriberResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+                    example: Abonné créé avec succès
+                data:
+                    $ref: '#/components/schemas/Subscriber'
+
+        Newsletter:
+            type: object
+            properties:
+                id:
+                    type: integer
+                title:
+                    type: string
+                    example: Offre Spéciale Avril
+                content:
+                    type: string
+                    example: Voici notre offre exclusive pour le mois d’avril...
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
+
+        NewsletterInput:
+            type: object
+            required:
+                - title
+                - content
+            properties:
+                title:
+                    type: string
+                    example: Offre Spéciale Avril
+                content:
+                    type: string
+                    example: Voici notre offre exclusive pour le mois d’avril...
+
+        NewsletterResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+                    example: Newsletter créée avec succès
+                data:
+                    $ref: '#/components/schemas/Newsletter'
