@@ -38,5 +38,37 @@ class CampaignController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Erreur lors de la création de la campagne', 'error' => $e->getMessage()], 500);
         }
     }
+
+    public function show($id)
+    {
+        try {
+            $campaign = Campaign::with('newsletter')->findOrFail($id);
+            return response()->json(['status' => 'success', 'data' => $campaign], 200);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Campagne non trouvée ou erreur de récupération', 'error' => $e->getMessage()], 404);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $validated = $request->validate([
+                'title' => 'sometimes|required|string|max:255',
+                'newsletter_id' => 'sometimes|required|exists:newsletters,id',
+                'scheduled_at' => 'sometimes|required|date',
+                'status' => 'sometimes|required|string|in:scheduled,sent,draft',
+            ]);
+
+            $campaign = Campaign::findOrFail($id);
+            $campaign->update($validated);
+
+            return response()->json(['status' => 'success', 'message' => 'Campagne mise à jour avec succès', 'data' => $campaign], 200);
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 'error', 'message' => 'Erreur de validation', 'errors' => $e->errors()], 422);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Erreur lors de la mise à jour de la campagne', 'error' => $e->getMessage()], 500);
+        }
+    }
+
     }
 }
