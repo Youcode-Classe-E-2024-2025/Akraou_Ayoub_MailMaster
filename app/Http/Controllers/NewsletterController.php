@@ -73,9 +73,20 @@ class NewsletterController extends Controller
             'data' => $newsletter,
         ]);
     }
+
+    /**
+     * Supprime une newsletter.
      */
-    public function destroy(Newsletter $newsletter)
+    public function destroy(string $id)
     {
-        //
+        $newsletter = Newsletter::find($id);
+
+        if (!$newsletter) {
+            return response()->json(['status' => 'error', 'message' => 'Newsletter non trouvée'], 404);
+        }
+
+        $newsletter->delete();
+
+        return response()->json(['status' => 'success', 'message' => 'Newsletter supprimée avec succès']);
     }
 }
