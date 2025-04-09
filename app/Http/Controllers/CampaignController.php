@@ -70,5 +70,15 @@ class CampaignController extends Controller
         }
     }
 
+    public function destroy($id)
+    {
+        try {
+            $campaign = Campaign::findOrFail($id);
+            $campaign->delete();
+
+            return response()->json(['status' => 'success', 'message' => 'Campagne supprimée avec succès'], 200);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Erreur lors de la suppression de la campagne', 'error' => $e->getMessage()], 500);
+        }
     }
 }
