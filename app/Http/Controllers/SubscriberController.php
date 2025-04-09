@@ -31,4 +31,15 @@ class SubscriberController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
+    public function show($id)
+    {
+        $subscriber = Subscriber::find($id);
+        if (!$subscriber) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        return response()->json($subscriber);
+    }
+
 }
