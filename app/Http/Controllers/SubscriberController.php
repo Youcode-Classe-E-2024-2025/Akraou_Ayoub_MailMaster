@@ -62,4 +62,19 @@ class SubscriberController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
+    public function destroy($id)
+    {
+        try {
+            $subscriber = Subscriber::find($id);
+            if (!$subscriber) {
+                return response()->json(['message' => 'Not found'], 404);
+            }
+
+            $subscriber->delete();
+            return response()->json(['message' => 'Deleted successfully']);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
 }
