@@ -21,30 +21,22 @@ class CampaignController extends Controller
 
     public function store(Request $request)
     {
-        //
-    }
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'newsletter_id' => 'required|exists:newsletters,id',
+                'scheduled_at' => 'required|date',
+                'status' => 'required|string|in:scheduled,sent,draft',
+            ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Campaign $campaign)
-    {
-        //
-    }
+            $campaign = Campaign::create($validated);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Campaign $campaign)
-    {
-        //
+            return response()->json(['status' => 'success', 'message' => 'Campagne créée avec succès', 'data' => $campaign], 201);
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 'error', 'message' => 'Erreur de validation', 'errors' => $e->errors()], 422);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Erreur lors de la création de la campagne', 'error' => $e->getMessage()], 500);
+        }
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Campaign $campaign)
-    {
-        //
     }
 }
