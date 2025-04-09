@@ -17,10 +17,24 @@ class NewsletterController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Crée une nouvelle newsletter.
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        $newsletter = Newsletter::create($validated);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Newsletter créée avec succès',
+            'data' => $newsletter,
+        ], 201);
+    }
+
         //
     }
 
