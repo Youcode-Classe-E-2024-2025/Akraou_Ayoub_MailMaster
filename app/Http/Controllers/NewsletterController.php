@@ -35,19 +35,20 @@ class NewsletterController extends Controller
         ], 201);
     }
 
-        //
-    }
-
     /**
-     * Display the specified resource.
+     * Affiche une newsletter spécifique.
      */
-    public function show(Newsletter $newsletter)
+    public function show(string $id)
     {
-        //
+        $newsletter = Newsletter::find($id);
+
+        if (!$newsletter) {
+            return response()->json(['status' => 'error', 'message' => 'Newsletter non trouvée'], 404);
+        }
+
+        return response()->json(['status' => 'success', 'data' => $newsletter]);
     }
 
-    /**
-     * Update the specified resource in storage.
      */
     public function update(Request $request, Newsletter $newsletter)
     {
