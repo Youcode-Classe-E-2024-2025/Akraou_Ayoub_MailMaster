@@ -15,10 +15,10 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::apiResource('subscribers', SubscriberController::class);
+    Route::apiResource('newsletters', NewsletterController::class);
+    Route::apiResource('campaigns', CampaignController::class);
 });
-Route::apiResource('subscribers', SubscriberController::class);
-Route::apiResource('newsletters', NewsletterController::class);
-Route::apiResource('campaigns', CampaignController::class);
 
 Route::get('/docs', function () {
     return redirect('/vendor/swagger-ui/index.html?url=/docs/swagger.yaml');
